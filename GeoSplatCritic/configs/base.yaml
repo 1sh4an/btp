@@ -1,0 +1,38 @@
+# Geo-Splat Critic: Base Configuration
+
+experiment_name: "geosplat_critic_v1"
+seed: 42
+
+data:
+  dataset_dir: "./data/sceneverse"
+  batch_size: 4
+  num_workers: 4
+  max_gaussians: 20000
+
+model:
+  llm_name: "microsoft/Phi-3-mini-4k-instruct"
+  llm_precision: "4bit"
+  lora_r: 64
+  lora_alpha: 16
+  
+  geometry_encoder:
+    type: "point_transformer_v3"
+    input_dim: 11
+    global_feature_dim: 512
+  
+  gpb:
+    num_primitives: 32
+    gumbel_temperature: 1.0
+
+training:
+  stage: 1 # 1: GPB Pretrain, 2: Alignment, 3: End-to-End
+  learning_rate: 0.0001
+  weight_decay: 0.05
+  gradient_accumulation_steps: 8
+  max_epochs: 50
+  mixed_precision: "bf16"
+
+loss_weights:
+  lm: 0.0
+  gpb: 1.0
+  critic: 0.0
